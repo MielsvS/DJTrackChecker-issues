@@ -347,6 +347,52 @@
     position: relative;
   }
 
+  /* ── Contact ── */
+  .contact-block {
+    margin-bottom: 48px;
+  }
+  .contact-text {
+    font-size: 13px;
+    color: var(--text-3);
+    line-height: 1.6;
+  }
+  .contact-text a {
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .contact-text a:hover { color: var(--accent); }
+
+  /* ── About ── */
+  .about-block {
+    margin-bottom: 48px;
+  }
+  .about-text {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.65;
+    max-width: 560px;
+    margin-bottom: 16px;
+  }
+  .about-text strong {
+    color: var(--text-1);
+    font-weight: 600;
+  }
+  .about-links {
+    display: flex;
+    gap: 20px;
+  }
+  .about-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .about-links a:hover { color: var(--accent); }
+
   /* ── Footer ── */
   footer {
     border-top: 1px solid var(--line);
@@ -406,7 +452,7 @@
     <h1>Less time on the<br><strong>boring stuff.</strong></h1>
     <p class="hero-sub">Your downloaded tracks, automatically identified, correctly tagged, quality-checked, and organised — before you've finished your coffee.</p>
     <div class="cta-row">
-      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" target="_blank" rel="noopener">
+      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform?usp=pp_url&entry.1201730315=Website&entry.1405928464=homepage&entry.1426983850=homepage-top&entry.475710295=2026-05-04" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Take the survey &amp; get early access
       </a>
@@ -468,10 +514,34 @@
     <p>DJTrackChecker is approaching a controlled beta release. Fill in the 3-minute survey to tell us how you currently manage your downloads — and get early access when it's ready.</p>
     <div class="prize">🎁 A few respondents win a free early adopter lifetime licence (~€30–35 value)</div>
     <br/>
-    <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" target="_blank" rel="noopener">
+    <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform?usp=pp_url&entry.1201730315=Website&entry.1405928464=homepage&entry.1426983850=homepage-bottom&entry.475710295=2026-05-04" target="_blank" rel="noopener">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Take the survey
     </a>
+  </div>
+
+  <div class="contact-block">
+    <div class="section-label">Questions &amp; feedback</div>
+    <p class="contact-text">
+      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues/new?template=bug_report.yml" target="_blank" rel="noopener">Report a bug</a> ·
+      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues/new?template=feature_request.yml" target="_blank" rel="noopener">Request a feature</a> ·
+      <a href="mailto:support@djtrackchecker.com">Ask a question</a>
+    </p>
+  </div>
+
+  <div class="about-block">
+    <div class="section-label">The maker</div>
+    <p class="about-text">Built by <strong>Miles Watt</strong> — DJ and developer. I built DJTrackChecker because I was tired of spending 15 to 30 minutes on admin after every download session. If you have the same problem, I'd love to hear from you.</p>
+    <div class="about-links">
+      <a href="https://www.instagram.com/djmileswatt" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        @djmileswatt
+      </a>
+      <a href="https://www.mixcloud.com/MilesWatt/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 9.5c-.3 0-.5.1-.7.2-.4-2.4-2.5-4.2-5-4.2-1.5 0-2.9.6-3.9 1.7-.5-.3-1.1-.5-1.7-.5-2 0-3.7 1.7-3.7 3.7 0 .1 0 .3.0.4C5.1 11.2 4 12.5 4 14c0 1.7 1.3 3 3 3h13c1.4 0 2.5-1.1 2.5-2.5S22.9 12 21.5 12v-1c.6 0 1 .4 1 1s-.4 1-1 1"/></svg>
+        Mixcloud
+      </a>
+    </div>
   </div>
 
   <footer>
