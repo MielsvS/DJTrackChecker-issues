@@ -17,7 +17,7 @@ DJTrackChecker is approaching a controlled beta. The core pipeline is working �
 
 If you're a DJ and this sounds useful, I'd love to hear how you currently manage your tracks:
 
-👉 [**Take the survey**](https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform)
+👉 [**Take the survey**](https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform?usp=pp_url&entry.1201730315=GitHub&entry.1405928464=DJTrackChecker-issues&entry.1426983850=github-repo&entry.475710295=2026-05-04])
 
 ---
 
