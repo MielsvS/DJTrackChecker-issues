@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DJTrackChecker — Less time on the boring stuff</title>
+<meta name="description" content="Automatic metadata tagging, audio quality detection, and file organisation for DJ music libraries. Windows app, coming soon." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d0f13;
+    --bg-1:      #13161c;
+    --bg-2:      #1a1e26;
+    --line:      #ffffff0f;
+    --line-2:    #ffffff18;
+    --text-1:    #eef0f4;
+    --text-2:    #9aa0ad;
+    --text-3:    #5c6470;
+    --accent:    #00c9aa;
+    --accent-dim:#008f7a;
+    --accent-bg: #00c9aa12;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'IBM Plex Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-1);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Grid texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Glow blob ── */
+  .glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #00c9aa18 0%, transparent 70%);
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+  }
+
+  /* ── Layout ── */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Header / nav ── */
+  header {
+    padding: 28px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { display: block; }
+  .logo-name {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border: 1px solid #00c9aa30;
+    border-radius: 4px;
+    padding: 3px 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 80px 0 64px;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeup 0.6s ease 0.1s forwards;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 300;
+    line-height: 1.18;
+    color: var(--text-1);
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeup 0.6s ease 0.2s forwards;
+  }
+  .hero h1 strong {
+    font-weight: 600;
+    color: #fff;
+  }
+  .hero-sub {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-2);
+    line-height: 1.65;
+    max-width: 560px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeup 0.6s ease 0.3s forwards;
+  }
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeup 0.6s ease 0.4s forwards;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #0a1a17;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-primary:hover { background: #00e0bf; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    padding: 12px 4px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--text-1); border-color: var(--line-2); }
+
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--line-2);
+    margin: 0 0 56px;
+  }
+
+  /* ── How it works ── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 56px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 0 20px;
+    position: relative;
+  }
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: -4px;
+    width: 1px;
+    background: var(--line-2);
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    background: var(--bg-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body {
+    padding: 4px 0 32px;
+  }
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+  .step:last-child .step-body { padding-bottom: 0; }
+
+  /* ── Feature pills ── */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 56px;
+  }
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg-1);
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .feature .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── Survey CTA block ── */
+  .survey-block {
+    background: var(--bg-1);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 32px;
+    margin-bottom: 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .survey-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-bg), transparent 60%);
+    pointer-events: none;
+  }
+  .survey-block h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .survey-block p {
+    font-size: 14px;
+    color: var(--text-2);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    position: relative;
+  }
+  .survey-block .prize {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border: 1px solid #00c9aa22;
+    border-radius: 4px;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .footer-right {
+    display: flex;
+    gap: 20px;
+  }
+  .footer-right a {
+    font-size: 12px;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-right a:hover { color: var(--text-2); }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .hero { padding: 56px 0 48px; }
+    .survey-block { padding: 24px; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<div class="wrap">
+  <header>
+    <a class="logo" href="#">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="4" y="4" width="10" height="10" rx="2" fill="rgba(0,0,0,0.3)"/>
+          <line x1="6" y1="6" x2="6" y2="12" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="9" y1="4.5" x2="9" y2="13.5" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="12" y1="6" x2="12" y2="12" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-name">DJTrackChecker</span>
+    </a>
+    <span class="badge">Beta soon</span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-label">Windows app · Beatport · Rekordbox</div>
+    <h1>Less time on the<br><strong>boring stuff.</strong></h1>
+    <p class="hero-sub">Your downloaded tracks, automatically identified, correctly tagged, quality-checked, and organised — before you've finished your coffee.</p>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Take the survey &amp; get early access
+      </a>
+      <a class="btn-ghost" href="https://github.com/MielsvS/DJTrackChecker-issues" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.686 1 1 3.686 1 7c0 2.654 1.72 4.9 4.105 5.694.3.055.41-.13.41-.29v-1.014c-1.67.363-2.02-.805-2.02-.805-.273-.694-.666-0.879-.666-.879-.545-.372.04-.365.04-.365.602.042.92.618.92.618.536.918 1.406.653 1.748.5.054-.388.21-.653.382-.803-1.334-.152-2.736-.667-2.736-2.97 0-.657.234-1.193.618-1.614-.062-.152-.268-.764.059-1.592 0 0 .504-.161 1.65.615A5.75 5.75 0 017 4.77c.51.002 1.023.069 1.502.202 1.146-.776 1.648-.615 1.648-.615.329.828.123 1.44.06 1.592.386.421.617.957.617 1.614 0 2.31-1.405 2.816-2.743 2.965.216.186.408.552.408 1.113v1.649c0 .161.108.348.413.29C11.282 11.898 13 9.652 13 7c0-3.314-2.686-6-6-6z" fill="currentColor"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <div class="section-label">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Pick your folder, hit process</div>
+        <div class="step-desc">Point DJTrackChecker at a folder of freshly downloaded MP3s and let it run. No drag-and-drop per track, no manual lookups.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Tracks identified via Beatport</div>
+        <div class="step-desc">Each file is matched against the Beatport catalogue. Artist, title, mix version, BPM, key, genre, release date, and artwork are written automatically.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Audio quality verified</div>
+        <div class="step-desc">A spectral analysis flags files that claim to be 320kbps but aren't — upscaled garbage caught before it pollutes your library.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Files renamed and moved</div>
+        <div class="step-desc">Clean matches land directly in your Rekordbox folder, correctly named. Uncertain matches go to a review queue — you stay in control.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">What it handles</div>
+  <div class="features">
+    <div class="feature"><span class="dot"></span>Beatport metadata lookup</div>
+    <div class="feature"><span class="dot"></span>ID3 tag writing</div>
+    <div class="feature"><span class="dot"></span>Album artwork embed</div>
+    <div class="feature"><span class="dot"></span>BPM &amp; key tagging</div>
+    <div class="feature"><span class="dot"></span>Upscale detection (FFT)</div>
+    <div class="feature"><span class="dot"></span>Filename cleanup</div>
+    <div class="feature"><span class="dot"></span>Rekordbox-ready output</div>
+    <div class="feature"><span class="dot"></span>Review queue for edge cases</div>
+  </div>
+
+  <div class="survey-block">
+    <h2>Help shape the beta</h2>
+    <p>DJTrackChecker is approaching a controlled beta release. Fill in the 3-minute survey to tell us how you currently manage your downloads — and get early access when it's ready.</p>
+    <div class="prize">🎁 A few respondents win a free early adopter lifetime licence (~€30–35 value)</div>
+    <br/>
+    <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Take the survey
+    </a>
+  </div>
+
+  <footer>
+    <div class="footer-left">djtrackchecker.com</div>
+    <div class="footer-right">
+      <a href="https://github.com/MielsvS/DJTrackChecker-issues" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues" target="_blank" rel="noopener">Issues</a>
+      <a href="mailto:support@djtrackchecker.com">Contact</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
