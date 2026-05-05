@@ -1,564 +1,584 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6CJDVQ04RT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6CJDVQ04RT');
-</script>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DJTrackChecker — Less time on the boring stuff</title>
-<meta name="description" content="Automatic metadata tagging, audio quality detection, and file organisation for DJ music libraries. Coming soon." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+<meta name="description" content="Automatic metadata tagging, audio quality detection, and file organisation for DJ music libraries. Coming soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #0d0f13;
-    --bg-1:      #13161c;
-    --bg-2:      #1a1e26;
-    --line:      #ffffff0f;
-    --line-2:    #ffffff18;
-    --text-1:    #eef0f4;
-    --text-2:    #9aa0ad;
-    --text-3:    #5c6470;
-    --accent:    #00c9aa;
-    --accent-dim:#008f7a;
-    --accent-bg: #00c9aa12;
-    --mono:      'IBM Plex Mono', monospace;
-    --sans:      'IBM Plex Sans', sans-serif;
+    --bg-0: #0e0f12;
+    --bg-1: #16181c;
+    --bg-2: #1f2228;
+    --bg-3: #2a2e35;
+    --line-1: #ffffff14;
+    --line-2: #ffffff26;
+    --line-3: #ffffff3d;
+    --text-1: #f4f5f7;
+    --text-2: #c8ccd3;
+    --text-3: #969aa3;
+    --text-4: #686d76;
+    --accent: #f5b94a;
+    --accent-dim: #c69134;
+    --accent-ink: #18120a;
+    --accent-bg: #f5b94a26;
+    --ok: #7fd99c;
+    --warn: #f5b94a;
+    --danger: #ef7b66;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-sans: 'Inter Tight', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
 
-  html { scroll-behavior: smooth; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+  }
 
   body {
-    background: var(--bg);
+    background: var(--bg-0);
     color: var(--text-1);
-    font-family: var(--sans);
+    font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Grid texture overlay ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ── Glow blob ── */
-  .glow {
-    position: fixed;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #00c9aa18 0%, transparent 70%);
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 0;
-    animation: pulse 8s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
-  }
-
-  /* ── Layout ── */
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
+  .container {
+    max-width: 760px;
     margin: 0 auto;
-    padding: 0 24px;
+    width: 100%;
   }
 
-  /* ── Header / nav ── */
+  /* ── Header ── */
   header {
-    padding: 28px 0 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--line-2);
   }
+
   .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
+    color: var(--text-1);
   }
+
   .logo-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 7px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--accent);
     flex-shrink: 0;
   }
-  .logo-icon svg { display: block; }
+
   .logo-name {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-1);
-    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
+
+  .header-links {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
     color: var(--accent);
     background: var(--accent-bg);
-    border: 1px solid #00c9aa30;
-    border-radius: 4px;
-    padding: 3px 8px;
-    letter-spacing: 0.06em;
+    border: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+    padding: 4px 9px;
+    border-radius: 3px;
     text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .header-link {
+    font-size: 12px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .header-link:hover {
+    color: var(--accent);
   }
 
   /* ── Hero ── */
   .hero {
-    padding: 80px 0 64px;
+    padding: 56px 32px 48px;
   }
+
   .hero-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 10px;
     color: var(--accent);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeup 0.6s ease 0.1s forwards;
+    margin-bottom: 22px;
   }
+
   .hero h1 {
-    font-size: clamp(32px, 5vw, 48px);
-    font-weight: 300;
-    line-height: 1.18;
+    font-family: var(--font-display);
+    font-size: clamp(36px, 8vw, 60px);
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.03em;
     color: var(--text-1);
-    letter-spacing: -0.025em;
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeup 0.6s ease 0.2s forwards;
+    margin: 0 0 20px 0;
   }
-  .hero h1 strong {
-    font-weight: 600;
-    color: #fff;
+
+  .hero h1 .accent {
+    color: var(--accent);
   }
-  .hero-sub {
-    font-size: 18px;
-    font-weight: 300;
+
+  .hero p {
+    font-size: 16px;
+    line-height: 1.6;
     color: var(--text-2);
-    line-height: 1.65;
-    max-width: 560px;
-    margin-bottom: 40px;
-    opacity: 0;
-    animation: fadeup 0.6s ease 0.3s forwards;
+    max-width: 520px;
+    margin: 0 0 32px 0;
   }
-  .cta-row {
+
+  .cta-buttons {
     display: flex;
+    gap: 18px;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    opacity: 0;
-    animation: fadeup 0.6s ease 0.4s forwards;
   }
-  .btn-primary {
+
+  .btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--accent);
-    color: #0a1a17;
-    font-family: var(--sans);
-    font-size: 14px;
+    font-size: 13px;
+    padding: 11px 18px;
+    border-radius: 4px;
+    text-decoration: none;
     font-weight: 600;
-    padding: 12px 22px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.15s, transform 0.1s;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    letter-spacing: -0.005em;
   }
-  .btn-primary:hover { background: #00e0bf; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .btn-primary:hover {
+    background: #ffc556;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
     color: var(--text-2);
-    font-size: 14px;
-    font-weight: 400;
-    text-decoration: none;
-    padding: 12px 4px;
-    border-bottom: 1px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .btn-ghost:hover { color: var(--text-1); border-color: var(--line-2); }
-
-  @keyframes fadeup {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: none; }
+    border-bottom: 1px solid var(--line-3);
+    padding: 11px 4px;
   }
 
-  /* ── Divider ── */
-  .divider {
-    height: 1px;
-    background: var(--line-2);
-    margin: 0 0 56px;
+  .btn-secondary:hover {
+    color: var(--accent);
   }
 
   /* ── How it works ── */
+  .section {
+    padding: 48px 32px;
+    border-top: 1px solid var(--line-3);
+  }
+
   .section-label {
-    font-family: var(--mono);
+    font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 600;
-    color: var(--text-3);
-    letter-spacing: 0.14em;
+    color: var(--text-2);
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 28px;
+    margin-bottom: 8px;
+  }
+
+  .section h2 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--text-1);
+    margin: 0 0 32px 0;
   }
 
   .steps {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    margin-bottom: 56px;
   }
+
   .step {
     display: grid;
-    grid-template-columns: 32px 1fr;
-    gap: 0 20px;
-    position: relative;
+    grid-template-columns: 64px 1fr;
+    gap: 22px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line-2);
   }
-  .step:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 32px;
-    bottom: -4px;
-    width: 1px;
-    background: var(--line-2);
+
+  .step:last-child {
+    border-bottom: 1px solid var(--line-2);
   }
-  .step-num {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--line-2);
-    background: var(--bg-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
+
+  .step-number {
+    font-family: var(--font-mono);
+    font-size: 22px;
     color: var(--accent);
-    flex-shrink: 0;
-    margin-top: 2px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
-  .step-body {
-    padding: 4px 0 32px;
-  }
-  .step-title {
-    font-size: 15px;
+
+  .step-content h3 {
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-1);
-    margin-bottom: 4px;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
   }
-  .step-desc {
-    font-size: 14px;
+
+  .step-content p {
+    font-size: 14.5px;
     color: var(--text-2);
     line-height: 1.55;
+    max-width: 520px;
+    margin: 0;
   }
-  .step:last-child .step-body { padding-bottom: 0; }
 
-  /* ── Feature pills ── */
+  /* ── Features ── */
   .features {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 56px;
   }
-  .feature {
-    display: flex;
+
+  .feature-pill {
+    display: inline-flex;
     align-items: center;
-    gap: 7px;
-    background: var(--bg-1);
-    border: 1px solid var(--line-2);
-    border-radius: 6px;
+    gap: 8px;
     padding: 8px 12px;
     font-size: 13px;
     color: var(--text-2);
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
   }
-  .feature .dot {
+
+  .feature-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--accent);
-    flex-shrink: 0;
   }
 
-  /* ── Survey CTA block ── */
-  .survey-block {
-    background: var(--bg-1);
-    border: 1px solid var(--line-2);
-    border-radius: 10px;
-    padding: 32px;
-    margin-bottom: 56px;
+  /* ── Beta signup ── */
+  .beta-box {
+    background: var(--bg-2);
+    border-top: 2px solid var(--accent);
+    padding: 28px;
+    border-radius: 6px;
     position: relative;
     overflow: hidden;
   }
-  .survey-block::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--accent-bg), transparent 60%);
-    pointer-events: none;
-  }
-  .survey-block h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-1);
+
+  .beta-box-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     margin-bottom: 10px;
-    position: relative;
   }
-  .survey-block p {
+
+  .beta-box h3 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+    margin: 0 0 8px 0;
+  }
+
+  .beta-box p {
+    font-size: 13.5px;
+    color: var(--text-2);
+    line-height: 1.55;
+    max-width: 480px;
+    margin: 0 0 16px 0;
+  }
+
+  /* ── The maker ── */
+  .maker {
+    padding: 32px;
+    border-top: 1px solid var(--line-3);
+  }
+
+  .maker-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .maker p {
     font-size: 14px;
     color: var(--text-2);
-    margin-bottom: 20px;
     line-height: 1.6;
-    position: relative;
-  }
-  .survey-block .prize {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent);
-    background: var(--accent-bg);
-    border: 1px solid #00c9aa22;
-    border-radius: 4px;
-    padding: 4px 10px;
-    display: inline-block;
-    margin-bottom: 20px;
-    position: relative;
+    max-width: 520px;
+    margin: 0;
   }
 
-  /* ── Contact ── */
-  .contact-block {
-    margin-bottom: 48px;
-  }
-  .contact-text {
-    font-size: 13px;
-    color: var(--text-3);
-    line-height: 1.6;
-  }
-  .contact-text a {
-    color: var(--text-3);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .contact-text a:hover { color: var(--accent); }
-
-  /* ── About ── */
-  .about-block {
-    margin-bottom: 48px;
-  }
-  .about-text {
-    font-size: 15px;
-    color: var(--text-2);
-    line-height: 1.65;
-    max-width: 560px;
-    margin-bottom: 16px;
-  }
-  .about-text strong {
+  .maker strong {
     color: var(--text-1);
     font-weight: 600;
   }
-  .about-links {
-    display: flex;
-    gap: 20px;
-  }
-  .about-links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 13px;
-    color: var(--text-3);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  .about-links a:hover { color: var(--accent); }
 
   /* ── Footer ── */
   footer {
-    border-top: 1px solid var(--line);
-    padding: 28px 0 40px;
+    padding: 20px 32px;
+    border-top: 1px solid var(--line-2);
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-3);
     flex-wrap: wrap;
     gap: 12px;
   }
-  .footer-left {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-3);
-  }
-  .footer-right {
+
+  .footer-links {
     display: flex;
-    gap: 20px;
+    gap: 18px;
   }
-  .footer-right a {
-    font-size: 12px;
+
+  .footer-link {
     color: var(--text-3);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color 0.2s;
   }
-  .footer-right a:hover { color: var(--text-2); }
+
+  .footer-link:hover {
+    color: var(--accent);
+  }
 
   /* ── Responsive ── */
-  @media (max-width: 480px) {
-    .hero { padding: 56px 0 48px; }
-    .survey-block { padding: 24px; }
-    footer { flex-direction: column; align-items: flex-start; }
+  @media (max-width: 640px) {
+    header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px 20px;
+    }
+
+    .header-links {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .hero {
+      padding: 32px 20px 24px;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+    }
+
+    .hero p {
+      font-size: 14px;
+    }
+
+    .section {
+      padding: 32px 20px;
+    }
+
+    .section h2 {
+      font-size: 24px;
+    }
+
+    .step {
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+    }
+
+    .step-number {
+      font-size: 18px;
+    }
+
+    .step-content h3 {
+      font-size: 14px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .beta-box {
+      padding: 20px;
+    }
+
+    .beta-box h3 {
+      font-size: 20px;
+    }
+
+    footer {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-links {
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 </style>
 </head>
 <body>
-<div class="glow"></div>
-
-<div class="wrap">
+<div class="container">
+  <!-- Header -->
   <header>
-    <a class="logo" href="#">
-      <div class="logo-icon">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <rect x="4" y="4" width="10" height="10" rx="2" fill="rgba(0,0,0,0.3)"/>
-          <line x1="6" y1="6" x2="6" y2="12" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="9" y1="4.5" x2="9" y2="13.5" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="12" y1="6" x2="12" y2="12" stroke="#0a1a17" stroke-width="1.8" stroke-linecap="round"/>
+    <a href="#" class="logo">
+      <span class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <path d="M7 6 L4 6 L4 26 L7 26" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"></path>
+          <path d="M25 6 L28 6 L28 26 L25 26" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"></path>
+          <rect x="9.5" y="14" width="3" height="10" fill="currentColor"></rect>
+          <rect x="14.5" y="9" width="3" height="15" fill="currentColor"></rect>
+          <rect x="19.5" y="12" width="3" height="12" fill="currentColor"></rect>
         </svg>
-      </div>
+      </span>
       <span class="logo-name">DJTrackChecker</span>
     </a>
-    <span class="badge">Beta soon</span>
+    <div class="header-links">
+      <span class="badge">BETA · SOON</span>
+      <a href="https://github.com/MielsvS/DJTrackChecker" class="header-link">GitHub</a>
+    </div>
   </header>
 
+  <!-- Hero -->
   <section class="hero">
-    <div class="hero-label">Beatport · Rekordbox · Coming soon</div>
-    <h1>Less time on the<br><strong>boring stuff.</strong></h1>
-    <p class="hero-sub">Your downloaded tracks, automatically identified, correctly tagged, quality-checked, and organised — before you've finished your coffee.</p>
-    <div class="cta-row">
-      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform?usp=pp_url&entry.1201730315=Website&entry.1405928464=homepage&entry.1426983850=homepage-top&entry.475710295=2026-05-04" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Take the survey &amp; get early access
+    <div class="hero-label">/// Rack-grade utility for serious DJs</div>
+    <h1>Less time on the <span class="accent">boring stuff.</span></h1>
+    <p>Drop a folder of fresh downloads in. Out comes a clean, correctly-tagged, quality-verified library — Rekordbox can take it from there.</p>
+    <div class="cta-buttons">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" class="btn btn-primary">
+        Take the survey
+        <span>→</span>
       </a>
-      <a class="btn-ghost" href="https://github.com/MielsvS/DJTrackChecker-issues" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.686 1 1 3.686 1 7c0 2.654 1.72 4.9 4.105 5.694.3.055.41-.13.41-.29v-1.014c-1.67.363-2.02-.805-2.02-.805-.273-.694-.666-0.879-.666-.879-.545-.372.04-.365.04-.365.602.042.92.618.92.618.536.918 1.406.653 1.748.5.054-.388.21-.653.382-.803-1.334-.152-2.736-.667-2.736-2.97 0-.657.234-1.193.618-1.614-.062-.152-.268-.764.059-1.592 0 0 .504-.161 1.65.615A5.75 5.75 0 017 4.77c.51.002 1.023.069 1.502.202 1.146-.776 1.648-.615 1.648-.615.329.828.123 1.44.06 1.592.386.421.617.957.617 1.614 0 2.31-1.405 2.816-2.743 2.965.216.186.408.552.408 1.113v1.649c0 .161.108.348.413.29C11.282 11.898 13 9.652 13 7c0-3.314-2.686-6-6-6z" fill="currentColor"/></svg>
-        View on GitHub
+      <a href="https://github.com/MielsvS/DJTrackChecker" class="btn btn-secondary">View on GitHub</a>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <h2>Four stages. Zero clicks per track.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <h3>Pick your folder</h3>
+          <p>Point DJTrackChecker at a folder of fresh downloads. No drag-and-drop per track.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <h3>Beatport identifies them</h3>
+          <p>Each file matched against the catalogue. Artist, title, mix, BPM, key, genre, artwork — all written.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <h3>Audio quality verified</h3>
+          <p>Spectral analysis flags upscaled garbage before it pollutes your library.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">04</div>
+        <div class="step-content">
+          <h3>Files renamed, filed</h3>
+          <p>Clean matches land in your destination folder. Uncertain ones go to the review queue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What it handles -->
+  <section class="section">
+    <div class="section-label">What it handles</div>
+    <div class="features">
+      <div class="feature-pill"><span class="feature-dot"></span> Beatport metadata</div>
+      <div class="feature-pill"><span class="feature-dot"></span> ID3 tag writer</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Album artwork</div>
+      <div class="feature-pill"><span class="feature-dot"></span> BPM & key</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Upscale detection (FFT)</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Filename cleanup</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Rekordbox-ready</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Review queue</div>
+    </div>
+  </section>
+
+  <!-- Beta signup -->
+  <section class="section">
+    <div class="beta-box">
+      <div class="beta-box-label">Beta signup</div>
+      <h3>Help shape the beta</h3>
+      <p>A 3-minute survey. Tell us how you currently manage downloads, and get early access when it ships. A few respondents win a free lifetime licence (~€30–35).</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" class="btn btn-primary">
+        Take the survey
+        <span>→</span>
       </a>
     </div>
   </section>
 
-  <div class="divider"></div>
+  <!-- The maker -->
+  <section class="maker">
+    <div class="maker-label">The maker</div>
+    <p>Built by <strong>Miels van Schaik</strong> — DJ and developer. Built DJTrackChecker because spending 15–30 minutes on admin after every download session was getting old. Same problem? <a href="mailto:mielsvanschaik@gmail.com" style="color: var(--accent); text-decoration: none;">Get in touch.</a></p>
+  </section>
 
-  <div class="section-label">How it works</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">Pick your folder, hit process <span style="font-weight:300; color:var(--text-3)">— service mode on the roadmap</span></div>
-        <div class="step-desc">Point DJTrackChecker at a folder of freshly downloaded MP3s and let it run. No drag-and-drop per track, no manual lookups.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Tracks identified via Beatport</div>
-        <div class="step-desc">Each file is matched against the Beatport catalogue. Artist, title, mix version, BPM, key, genre, release date, and artwork are written automatically.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">Audio quality verified</div>
-        <div class="step-desc">A spectral analysis flags files that claim to be 320kbps but aren't — upscaled garbage caught before it pollutes your library. More quality checks will be added later.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">Files renamed and moved</div>
-        <div class="step-desc">Clean matches land directly in your desired folder, correctly named. Specify a subfolder format if you like. Uncertain matches go to a review queue — you stay in control.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-label">What it handles</div>
-  <div class="features">
-    <div class="feature"><span class="dot"></span>Beatport metadata lookup</div>
-    <div class="feature"><span class="dot"></span>ID3 tag writing</div>
-    <div class="feature"><span class="dot"></span>Album artwork embed</div>
-    <div class="feature"><span class="dot"></span>BPM &amp; key tagging</div>
-    <div class="feature"><span class="dot"></span>Upscale detection (FFT)</div>
-    <div class="feature"><span class="dot"></span>Filename cleanup</div>
-    <div class="feature"><span class="dot"></span>Rekordbox-ready output</div>
-    <div class="feature"><span class="dot"></span>Review queue for edge cases</div>
-  </div>
-
-  <div class="survey-block">
-    <h2>Help shape the beta</h2>
-    <p>DJTrackChecker is approaching a controlled beta release. Fill in the 3-minute survey to tell us how you currently manage your downloads — and get early access when it's ready.</p>
-    <div class="prize">🎁 A few respondents win a free early adopter lifetime licence (~€30–35 value)</div>
-    <br/>
-    <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform?usp=pp_url&entry.1201730315=Website&entry.1405928464=homepage&entry.1426983850=homepage-bottom&entry.475710295=2026-05-04" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L12.5 7L7 12.5M1.5 7H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Take the survey
-    </a>
-  </div>
-
-  <div class="contact-block">
-    <div class="section-label">Questions &amp; feedback</div>
-    <p class="contact-text">
-      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues/new?template=bug_report.yml" target="_blank" rel="noopener">Report a bug</a> ·
-      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues/new?template=feature_request.yml" target="_blank" rel="noopener">Request a feature</a> ·
-      <a href="mailto:support@djtrackchecker.com">Ask a question</a>
-    </p>
-  </div>
-
-  <div class="about-block">
-    <div class="section-label">The maker</div>
-    <p class="about-text">Built by <strong>Miles Watt</strong> — DJ and developer. I built DJTrackChecker because I was tired of spending 15 to 30 minutes on admin after every download session. If you have the same problem, I'd love to hear from you.</p>
-    <div class="about-links">
-      <a href="https://www.instagram.com/djmileswatt" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
-        @djmileswatt
-      </a>
-      <a href="https://www.mixcloud.com/MilesWatt/" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 9.5c-.3 0-.5.1-.7.2-.4-2.4-2.5-4.2-5-4.2-1.5 0-2.9.6-3.9 1.7-.5-.3-1.1-.5-1.7-.5-2 0-3.7 1.7-3.7 3.7 0 .1 0 .3.0.4C5.1 11.2 4 12.5 4 14c0 1.7 1.3 3 3 3h13c1.4 0 2.5-1.1 2.5-2.5S22.9 12 21.5 12v-1c.6 0 1 .4 1 1s-.4 1-1 1"/></svg>
-        Mixcloud
-      </a>
-    </div>
-  </div>
-
+  <!-- Footer -->
   <footer>
-    <div class="footer-left">djtrackchecker.com</div>
-    <div class="footer-right">
-      <a href="https://github.com/MielsvS/DJTrackChecker-issues" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/MielsvS/DJTrackChecker-issues/issues" target="_blank" rel="noopener">Issues</a>
-      <a href="mailto:support@djtrackchecker.com">Contact</a>
+    <span>djtrackchecker.com</span>
+    <div class="footer-links">
+      <a href="https://github.com/MielsvS/DJTrackChecker" class="footer-link">GitHub</a>
+      <a href="https://github.com/MielsvS/DJTrackChecker/issues" class="footer-link">Issues</a>
+      <a href="mailto:mielsvanschaik@gmail.com" class="footer-link">Contact</a>
     </div>
   </footer>
 </div>
