@@ -1,0 +1,44 @@
+name: Question / General feedback
+description: Not a bug or feature request — general questions, feedback, or anything else
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question or general feedback? We'd love to hear from you!
+
+        For bugs, use the **Bug Report** template. For feature ideas, use the **Feature Request** template.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question or feedback
+      description: Ask anything — how something works, whether a workflow is supported, general impressions, etc.
+      placeholder: I was wondering...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - How does this work?
+        - Is this feature planned?
+        - Something feels off (not a bug)
+        - General feedback / impression
+        - Other
+
+  - type: input
+    id: version
+    attributes:
+      label: App version (optional)
+      description: The version shown in Help → About
+      placeholder: e.g. 0.3.1
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Screenshots or anything else that helps explain your question.
