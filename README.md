@@ -13,7 +13,14 @@ DJTrackChecker monitors an inbox folder and automatically handles the rest:
 
 ## Current status
 
-DJTrackChecker is approaching a controlled beta. The core pipeline is working — track identification, metadata tagging, quality checks, renaming, and the review flow are all functional. Right now the app runs on-demand: you pick a source and destination folder, hit process, and review the results. Automatic background monitoring is on the roadmap.
+The first beta for Windows has just been released. The core pipeline is working — track identification, metadata tagging, quality checks, renaming, and the review flow are all functional. Right now the app runs on-demand: you pick a source and destination folder, hit process, and review the results. Automatic background monitoring is on the roadmap.
+
+> **NOTE: The program hasn't been signed yet. Expect warnings when installing.**
+> On Windows, click **"More info"** in the SmartScreen warning, then click **"Run anyway"**. The app is safe — signing is on the roadmap.
+
+👉 [**Download here**](https://github.com/MielsvS/DJTrackChecker-issues/releases/latest)
+
+---
 
 If you're a DJ and this sounds useful, I'd love to hear how you currently manage your tracks:
 
