@@ -66,6 +66,23 @@
     width: 100%;
   }
 
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: #ffc556;
+    text-decoration-color: #ffc556;
+  }
+
+  a:visited {
+    color: var(--accent-dim);
+    text-decoration-color: var(--accent-dim);
+  }
+
   /* ── Header ── */
   header {
     display: flex;
@@ -531,8 +548,8 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-label">/// Rack-grade utility for serious DJs</div>
-    <h1>Less time on <span class="accent">boring stuff,</span> more time for <span class="accent">music!</span></h1>
-    <p>PMonitors your download folder and out comes a clean, correctly-tagged, quality-verified file, so you can blindly trust your Rekordbox library</p>
+    <h1>Less time on <span class="accent">boring stuff.</span> More time for <span class="accent">music.</span></h1>
+    <p>Monitors your download folder and out comes a clean, correctly-tagged, quality-verified file, so you can blindly trust your Rekordbox library</p>
     <div class="cta-buttons">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSfXN5ZGDqSYH3ULxUfy_V74Cb8Ro9sEKprTqUOfY2SD_kT1Yg/viewform" class="btn btn-primary">
         Take the survey
@@ -583,10 +600,10 @@
     <div class="section-label">What it handles</div>
     <div class="features">
       <div class="feature-pill"><span class="feature-dot"></span> Beatport metadata</div>
-      <div class="feature-pill"><span class="feature-dot"></span> ID3 tag writer</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Metadata tagging</div>
       <div class="feature-pill"><span class="feature-dot"></span> Album artwork</div>
       <div class="feature-pill"><span class="feature-dot"></span> BPM & key</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Upscale detection (FFT)</div>
+      <div class="feature-pill"><span class="feature-dot"></span> Upscale detection</div>
       <div class="feature-pill"><span class="feature-dot"></span> Filename cleanup</div>
       <div class="feature-pill"><span class="feature-dot"></span> Rekordbox-ready</div>
       <div class="feature-pill"><span class="feature-dot"></span> Review queue</div>
@@ -609,7 +626,7 @@
   <!-- The maker -->
   <section class="maker">
     <div class="maker-label">The maker</div>
-    <p>Built by <strong>Miels</strong> a.k.a. <a href="https://mileswatt.com">Miles Watt</a> — DJ and developer. Built DJTrackChecker because spending 15–30 minutes on admin after every download session was getting old. Hope it helps your workflow too!</p>
+    <p>Built by <strong>Miels</strong> a.k.a. <a href="https://mileswatt.com">Miles Watt</a> — DJ and developer: I built DJTrackChecker because spending 15–30 minutes on admin after every download session was getting old. Hope it helps your workflow too!</p>
   </section>
 
   <!-- Footer -->
