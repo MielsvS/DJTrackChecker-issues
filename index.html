@@ -472,6 +472,41 @@
       gap: 8px;
     }
   }
+
+  /* ── Vinyl arches — top-right corner ── */
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-radial-gradient(
+    circle at calc(100% - 676px) 488px,
+    transparent 0 26px,
+    var(--line-2) 26px 27px,
+    transparent 27px 52px
+  );
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0 380px, transparent 480px);
+          mask-image: radial-gradient(circle at 100% 0%, #000 0 380px, transparent 480px);
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hide arches on small screens — ze passen niet en zouden afleiden */
+@media (max-width: 640px) {
+  body::before { display: none; }
+}
 </style>
 </head>
 <body>
