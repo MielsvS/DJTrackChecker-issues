@@ -473,23 +473,20 @@
     }
   }
 
-  /* ── Vinyl arches — top-right corner ── */
-body {
+/* ── Vinyl arches — anchored to the container (R8) ── */
+.container {
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-body::before {
+.container::before {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 600px;
-  height: 600px;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
   background-image: repeating-radial-gradient(
-    circle at calc(100% - 676px) 488px,
+    circle at 84px 488px,
     transparent 0 26px,
     var(--line-2) 26px 27px,
     transparent 27px 52px
@@ -498,14 +495,13 @@ body::before {
           mask-image: radial-gradient(circle at 100% 0%, #000 0 380px, transparent 480px);
 }
 
-.container {
+.container > * {
   position: relative;
   z-index: 1;
 }
 
-/* Hide arches on small screens — ze passen niet en zouden afleiden */
 @media (max-width: 640px) {
-  body::before { display: none; }
+  .container::before { display: none; }
 }
 </style>
 </head>
