@@ -66,19 +66,19 @@
     width: 100%;
   }
 
-  a {
+  a:not(.btn):not(.logo):not(.header-link):not(.footer-link) {
     color: var(--accent);
     text-decoration: underline;
     text-decoration-color: var(--accent);
     transition: color 0.2s;
   }
 
-  a:hover {
+  a:not(.btn):not(.logo):not(.header-link):not(.footer-link):hover {
     color: #ffc556;
     text-decoration-color: #ffc556;
   }
 
-  a:visited {
+  a:not(.btn):not(.logo):not(.header-link):not(.footer-link):visited {
     color: var(--accent-dim);
     text-decoration-color: var(--accent-dim);
   }
@@ -521,6 +521,85 @@
 @media (max-width: 640px) {
   .container::before { display: none; }
 }
+
+/* ── Animations ── */
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 0.85; transform: translateX(-50%) scale(1.12); }
+}
+
+/* Hero entrance — staggered */
+.hero-label {
+  opacity: 0;
+  animation: fadeup 0.55s ease forwards;
+  animation-delay: 0.05s;
+}
+
+.hero h1 {
+  opacity: 0;
+  animation: fadeup 0.55s ease forwards;
+  animation-delay: 0.15s;
+}
+
+.hero p {
+  opacity: 0;
+  animation: fadeup 0.55s ease forwards;
+  animation-delay: 0.25s;
+}
+
+.cta-buttons {
+  opacity: 0;
+  animation: fadeup 0.55s ease forwards;
+  animation-delay: 0.35s;
+}
+
+/* Accent glow blob behind hero */
+.hero {
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  width: 480px;
+  height: 220px;
+  background: radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%);
+  opacity: 0.55;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+  animation: pulse 8s ease-in-out infinite;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scroll-fade base state */
+.fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Feature pill stagger via CSS custom property */
+.feature-pill.fade-in {
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
 </style>
 </head>
 <body>
@@ -561,31 +640,31 @@
 
   <!-- How it works -->
   <section class="section">
-    <div class="section-label">How it works</div>
-    <h2>Four stages. Zero clicks per track.</h2>
+    <div class="section-label fade-in">How it works</div>
+    <h2 class="fade-in">Four stages. Zero clicks per track.</h2>
     <div class="steps">
-      <div class="step">
+      <div class="step fade-in">
         <div class="step-number">01</div>
         <div class="step-content">
           <h3>Set your folder</h3>
           <p>Point DJTrackChecker at a folder with your downloads. No drag-and-drop per track.</p>
         </div>
       </div>
-      <div class="step">
+      <div class="step fade-in">
         <div class="step-number">02</div>
         <div class="step-content">
           <h3>Beatport identifies them</h3>
           <p>Each file matched against the catalogue. Artist, title, mix, BPM, key, genre, artwork: all correct and written.</p>
         </div>
       </div>
-      <div class="step">
+      <div class="step fade-in">
         <div class="step-number">03</div>
         <div class="step-content">
           <h3>Audio quality verified</h3>
           <p>Spectral analysis flags upscaled garbage before it pollutes your library. More checks coming soon.</p>
         </div>
       </div>
-      <div class="step">
+      <div class="step fade-in">
         <div class="step-number">04</div>
         <div class="step-content">
           <h3>Files renamed, filed</h3>
@@ -597,22 +676,22 @@
 
   <!-- What it handles -->
   <section class="section">
-    <div class="section-label">What it handles</div>
+    <div class="section-label fade-in">What it handles</div>
     <div class="features">
-      <div class="feature-pill"><span class="feature-dot"></span> Beatport metadata</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Metadata tagging</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Album artwork</div>
-      <div class="feature-pill"><span class="feature-dot"></span> BPM & key</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Upscale detection</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Filename cleanup</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Rekordbox-ready</div>
-      <div class="feature-pill"><span class="feature-dot"></span> Review queue</div>
+      <div class="feature-pill fade-in" style="--i:0"><span class="feature-dot"></span> Beatport metadata</div>
+      <div class="feature-pill fade-in" style="--i:1"><span class="feature-dot"></span> Metadata tagging</div>
+      <div class="feature-pill fade-in" style="--i:2"><span class="feature-dot"></span> Album artwork</div>
+      <div class="feature-pill fade-in" style="--i:3"><span class="feature-dot"></span> BPM & key</div>
+      <div class="feature-pill fade-in" style="--i:4"><span class="feature-dot"></span> Upscale detection</div>
+      <div class="feature-pill fade-in" style="--i:5"><span class="feature-dot"></span> Filename cleanup</div>
+      <div class="feature-pill fade-in" style="--i:6"><span class="feature-dot"></span> Rekordbox-ready</div>
+      <div class="feature-pill fade-in" style="--i:7"><span class="feature-dot"></span> Review queue</div>
     </div>
   </section>
 
   <!-- Beta signup -->
   <section class="section">
-    <div class="beta-box">
+    <div class="beta-box fade-in">
       <div class="beta-box-label">Beta signup</div>
       <h3>Help shape the beta</h3>
       <p>A 3-minute survey. Tell us how you currently manage downloads, and get early access when it ships. Chance to win a free lifetime premium licence (~€30–35)!</p>
@@ -638,5 +717,17 @@
     </div>
   </footer>
 </div>
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
