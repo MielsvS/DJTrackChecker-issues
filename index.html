@@ -369,11 +369,27 @@
     margin-bottom: 12px;
   }
 
+  .maker-body {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    max-width: 584px;
+  }
+
+  .maker-portrait {
+    width: 64px;
+    height: 96px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 4px;
+    flex-shrink: 0;
+    filter: grayscale(20%);
+  }
+
   .maker p {
     font-size: 14px;
     color: var(--text-2);
     line-height: 1.6;
-    max-width: 520px;
     margin: 0;
   }
 
@@ -489,6 +505,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
   }
 
 /* ── Vinyl arches — anchored to the container (R8) ── */
@@ -705,7 +722,10 @@
   <!-- The maker -->
   <section class="maker">
     <div class="maker-label">The maker</div>
-    <p>Built by <strong>Miels</strong> a.k.a. <a href="https://mileswatt.com">Miles Watt</a> — DJ and developer: I built DJTrackChecker because spending 15–30 minutes on admin after every download session was getting old. Hope it helps your workflow too!</p>
+    <div class="maker-body">
+      <img src="MilesWattPortrait.jpg" alt="Miles Watt" class="maker-portrait">
+      <p>Built by <strong>Miels</strong> a.k.a. <a href="https://mileswatt.com">Miles Watt</a> — DJ and developer: I built DJTrackChecker because spending 15–30 minutes on admin after every download session was getting old. Hope it helps your workflow too!</p>
+    </div>
   </section>
 
   <!-- Footer -->
