@@ -49,34 +49,7 @@ For questions that aren't bugs or feature requests, reach out at **[support@djtr
 
 ## Roadmap
 
-What's coming next — and what's already done.
+DJTrackChecker is being built towards a polished desktop app for DJs — fast matching, accurate tagging, and a quality check that catches fakes you'd otherwise miss.
 
-### Soon
-
-- **Settings screen** — Configure matching thresholds, quality check sensitivity, and other preferences from within the app
-- **Processing history** — See what DJTrackChecker has done: which tracks were processed, when, and what tags were written
-- **Track detail view** — See exactly what tags were written to your track, and correct the match if needed
-- **Remember your folders** — DJTrackChecker remembers your last used source and destination folders between sessions
-- **Built-in help** — Access documentation, status explanations, and troubleshooting tips without leaving the app
-
-### Later
-
-- **Customise filename and folder structure** — Define how your processed files are named and where they end up, using templates with variables like artist, title, BPM, and key
-- **Customise which tags are written** — Choose exactly which metadata fields DJTrackChecker fills in, and set your own defaults
-- **Undo processed tracks** — Made a mistake or picked the wrong match? Undo and restore the original file
-- **FLAC, WAV, and AIFF support** — Process more than just MP3 files
-- **Preview audio before choosing a match** — Listen to Beatport previews directly in the review screen to pick the right track
-- **Run in the background** — Let DJTrackChecker watch your inbox folder and process new tracks automatically as they arrive
-- **macOS support** — Run DJTrackChecker natively on Mac
-
-### Done
-
-- Track identification via Beatport
-- Metadata tagging (artist, title, remix, genre, BPM, key, release date, label, ISRC, artwork)
-- Audio quality check (detects fake high-quality files)
-- Automatic file renaming
-- Review flow for uncertain matches (choose the right track from candidates)
-- Review flow for quality warnings (accept or reject flagged files)
-- Real-time processing progress
-- Browse and select source and destination folders
-- Sort and filter your track list
+👉 [**View planned features**](../../issues?q=is%3Aopen+label%3Aplanned)
+👉 [**See what's been released**](../../releases)
